@@ -6,7 +6,11 @@
 
     <groupId>com.smile</groupId>
     <artifactId>red-packet</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>redpacket</module>
+    </modules>
 
     <name>red-packet</name>
     <!-- FIXME change it to the project's website -->
