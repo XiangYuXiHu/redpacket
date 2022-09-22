@@ -28,21 +28,23 @@ public class UserRedPacketServiceImpl implements UserRedPacketService {
     private static final int FAILED = 0;
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public int grabRedPacket(Long redPacketId, Long userId) {
         RedPacket redPacket = redPacketMapper.getRedPacket(redPacketId);
         Integer leftRedPacket = redPacket.getStock();
         if (leftRedPacket > 0) {
-            redPacketMapper.decreaseRedPacket(redPacketId);
-            /**
-             * 生成抢红包信息
-             */
-            UserRedPacket userRedPacket = new UserRedPacket();
-            userRedPacket.setRedPacketId(redPacketId);
-            userRedPacket.setUserId(userId);
-            userRedPacket.setAmount(redPacket.getUnitAmount());
-            int result = userRedPacketMapper.grabRedPacket(userRedPacket);
-            return result;
+            Integer success = redPacketMapper.decreaseRedPacket(redPacketId);
+            if (success > 0) {
+                /**
+                 * 生成抢红包信息
+                 */
+                UserRedPacket userRedPacket = new UserRedPacket();
+                userRedPacket.setRedPacketId(redPacketId);
+                userRedPacket.setUserId(userId);
+                userRedPacket.setAmount(redPacket.getUnitAmount());
+                int result = userRedPacketMapper.grabRedPacket(userRedPacket);
+                return result;
+            }
         }
         return 0;
     }

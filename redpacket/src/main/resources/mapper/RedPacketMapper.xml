@@ -11,6 +11,6 @@
     </select>
     <!-- 扣减抢红包库存 -->
     <update id="decreaseRedPacket">
-        update t_red_packet set stock=stock-1 where id=#{id}
+        update t_red_packet set stock=stock-1 where id=#{id} and stock>0
     </update>
 </mapper>
