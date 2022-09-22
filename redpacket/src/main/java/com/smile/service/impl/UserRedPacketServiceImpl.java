@@ -48,4 +48,35 @@ public class UserRedPacketServiceImpl implements UserRedPacketService {
         }
         return 0;
     }
+
+    @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public int grabRedPacketByVersion(Long redPacketId, Long userId) {
+        long start = System.currentTimeMillis();
+        while (true) {
+            long end = System.currentTimeMillis();
+            if ((end - start) > 100) {
+                return FAILED;
+            }
+            RedPacket redPacket = redPacketMapper.getRedPacket(redPacketId);
+            Integer stock = redPacket.getStock();
+            Integer version = redPacket.getVersion();
+            if (stock > 0) {
+                Integer success = redPacketMapper.decreaseRedPacketByVersion(redPacketId, version);
+                if (success == 0) {
+                    continue;
+                }
+                UserRedPacket userRedPacket = new UserRedPacket();
+                userRedPacket.setRedPacketId(redPacketId);
+                userRedPacket.setUserId(userId);
+                userRedPacket.setAmount(redPacket.getUnitAmount());
+                int result = userRedPacketMapper.grabRedPacket(userRedPacket);
+                return result;
+            } else {
+                return FAILED;
+            }
+        }
+    }
+
+
 }

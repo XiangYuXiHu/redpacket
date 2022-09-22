@@ -12,4 +12,13 @@ public interface UserRedPacketService {
      * @return
      */
     int grabRedPacket(Long redPacketId, Long userId);
+
+    /**
+     * cas
+     *
+     * @param redPacketId
+     * @param userId
+     * @return
+     */
+    int grabRedPacketByVersion(Long redPacketId, Long userId);
 }

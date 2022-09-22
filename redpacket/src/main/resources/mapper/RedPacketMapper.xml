@@ -13,4 +13,9 @@
     <update id="decreaseRedPacket">
         update t_red_packet set stock=stock-1 where id=#{id} and stock>0
     </update>
+
+    <update id="decreaseRedPacketByVersion">
+        update t_red_packet set stock=stock-1,version=version+1
+         where id=#{id} and version=#{version}
+    </update>
 </mapper>

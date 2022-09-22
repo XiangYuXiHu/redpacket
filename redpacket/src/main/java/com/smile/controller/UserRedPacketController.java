@@ -25,7 +25,7 @@ public class UserRedPacketController {
     @ResponseBody
     public Map<String, Object> grabRedPacket(Long redPacketId, Long userId) {
         System.out.println("=============" + counter++);
-        int result = userRedPacketService.grabRedPacket(redPacketId, userId);
+        int result = userRedPacketService.grabRedPacketByVersion(redPacketId, userId);
         Map<String, Object> retMap = new HashMap<String, Object>();
         boolean flag = result > 0;
         retMap.put("success", flag);
